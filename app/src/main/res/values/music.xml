@@ -1,0 +1,30 @@
+<?xml version="1.0" encoding="utf-8"?>
+<resources>
+    <string-array name="bgm_normal">
+        <item>014-1-am.mp3</item>
+        <item>015-2-am.mp3</item>
+        <item>016-3-am.mp3</item>
+        <item>017-4-am.mp3</item>
+        <item>018-5-am.mp3</item>
+        <item>019-6-am.mp3</item>
+        <item>020-7-am.mp3</item>
+        <item>021-8-am.mp3</item>
+        <item>022-9-am.mp3</item>
+        <item>023-10-am.mp3</item>
+        <item>024-11-am.mp3</item>
+        <item>025-12-am.mp3</item>
+        <item>025-12-am.mp3</item>
+        <item>026-1-pm.mp3</item>
+        <item>027-2-pm.mp3</item>
+        <item>028-3-pm.mp3</item>
+        <item>029-4-pm.mp3</item>
+        <item>030-5-pm.mp3</item>
+        <item>031-6-pm.mp3</item>
+        <item>032-7-pm.mp3</item>
+        <item>033-8-pm.mp3</item>
+        <item>034-9-pm.mp3</item>
+        <item>035-10-pm.mp3</item>
+        <item>036-11-pm.mp3</item>
+        <item>037-12-pm.mp3</item>
+    </string-array>
+</resources>
