@@ -5,16 +5,20 @@ import android.media.MediaPlayer;
 import android.support.v7.app.AppCompatActivity;
 import android.os.Bundle;
 import java.util.Calendar;
-
+import java.util.Timer;
+import java.util.TimerTask;
 
 
 public class MainActivity extends AppCompatActivity {
 
     private MediaPlayer mp;
+    private int playing_now = -1;
+    protected static boolean foreground = true;
 
     private int getHour() {
         Calendar cal = Calendar.getInstance();
-        return cal.get(Calendar.HOUR_OF_DAY);
+        //return cal.get(Calendar.HOUR_OF_DAY);
+        return cal.get(Calendar.MINUTE) % 24;
     }
 
     private int getSong(String theme, int hour) {
@@ -44,7 +48,57 @@ public class MainActivity extends AppCompatActivity {
         bgm_n[22]=R.raw.n22;
         bgm_n[23]=R.raw.n23;
 
-        return bgm_n[hour];
+        playing_now = bgm_n[hour];
+
+        return playing_now;
+    }
+
+    private float fo_rate = (float).95;
+    private boolean fo_play = true;
+    private boolean fo_running = false;
+
+    private void fadeOut(boolean play){
+        fo_running = true;
+        fo_play = play;
+        if(fo_rate<0.1) {
+            fo_rate = (float).95;
+            if(mp != null) mp.release();
+            if(fo_play) {
+                mp = MediaPlayer.create(this, getSong("n", this.getHour()));
+                mp.setVolume(1, 1);
+                mp.start();
+            }
+            fo_running = false;
+            return;
+        }
+        fo_rate = fo_rate*fo_rate;
+        mp.setVolume(fo_rate, fo_rate);
+
+        new Timer().schedule(
+                new TimerTask() {
+                    @Override
+                    public void run() {
+                        fadeOut(fo_play);
+                    }
+                },
+                100
+        );
+    }
+
+    private void play_loop(){
+        if(!fo_running && playing_now != getSong("n", this.getHour())) {
+            fadeOut(true);
+        }
+
+        new Timer().schedule(
+                new TimerTask() {
+                    @Override
+                    public void run() {
+                        play_loop();
+                    }
+                },
+                (foreground? 10000 : 300000)
+        );
     }
 
     @Override
@@ -55,15 +109,28 @@ public class MainActivity extends AppCompatActivity {
 
     @Override
     protected void onStart(){
-        mp = mp.create(this, getSong("n",this.getHour()) );
+        if(mp == null || !mp.isPlaying())
+            mp = mp.create(this, getSong("n",this.getHour()) );
         mp.setLooping(true);
-        mp.start();
+        if(!mp.isPlaying()) mp.start();
         super.onStart();
+    }
+
+    @Override
+    protected void onResume(){
+        play_loop();
+        foreground=true;
+        super.onResume();
     }
 
     @Override
     protected void onPause() {
         super.onPause();
+    }
+
+    protected void onStop() {
+        foreground=false;
+        super.onStop();
     }
 
     @Override
